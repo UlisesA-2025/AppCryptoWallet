@@ -144,15 +144,22 @@ namespace CryptoWalletAPI.Controllers
             var t = await _context.Transacciones.FindAsync(id);
             if (t == null) return NotFound();
 
-            t.CantCrypto = dto.CantCrypto;
-            t.Tipo = dto.Tipo;
-            t.Fecha = dto.Fecha;
+            var crypto = await _context.Criptomonedas.FirstOrDefaultAsync(c => c.Crypto_Code == dto.Crypto_Code);
+            if (crypto == null) return NotFound("Criptomoneda no encontrada.");
 
-            var precio = await ObtenerPrecio(dto.Crypto_Code,dto.ExchangeNombre, dto.Tipo);
+            var exchange = await _context.Exchanges.FirstOrDefaultAsync(e => e.Nombre == dto.ExchangeNombre);
+            if (exchange == null) return NotFound("Exchange no encontrado.");
+
+            decimal precio = await ObtenerPrecio(dto.Crypto_Code, dto.ExchangeNombre, dto.Tipo);
+            if (precio == 0) return BadRequest("No se pudo obtener el precio actual.");
+
+            t.Tipo = dto.Tipo;
+            t.CantCrypto = dto.CantCrypto;
+            t.Fecha = dto.Fecha;
             t.CantARS = dto.CantCrypto * precio;
 
             await _context.SaveChangesAsync();
-            return Ok("Transacción actualizada");
+            return Ok(new { mensaje = "Transacción actualizada correctamente." });
         }
 
         [HttpDelete("{id}")]
@@ -176,10 +183,10 @@ namespace CryptoWalletAPI.Controllers
             foreach (var c in cryptos)
             {
                 decimal comprados = await _context.Transacciones
-                    .Where(t => t.IdCrypto == c.Id && t.Tipo == "purchase").SumAsync(t => t.CantCrypto);
+                    .Where(t => t.CriptomonedaId == c.Id && t.Tipo == "purchase").SumAsync(t => t.CantCrypto);
 
                 decimal vendidos = await _context.Transacciones
-                    .Where(t => t.IdCrypto == c.Id && t.Tipo == "sale").SumAsync(t => t.CantCrypto);
+                    .Where(t => t.CriptomonedaId == c.Id && t.Tipo == "sale").SumAsync(t => t.CantCrypto);
 
                 decimal tenencia = comprados - vendidos;
 
