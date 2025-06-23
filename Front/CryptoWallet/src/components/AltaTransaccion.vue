@@ -52,13 +52,13 @@ const form = ref({
 const mensaje = ref('');
 const precioActual = ref(0);
 
-// 🔍 Obtener precio desde CriptoYa según exchange y cripto
+
 const obtenerPrecio = async () => {
   try {
     const res = await fetch(`https://criptoya.com/api/${form.value.exchange}/${form.value.crypto_code}/ars`);
     const data = await res.json();
 
-    // Usamos totalAsk (para compra) o totalBid (para venta)
+    
     precioActual.value =
       form.value.tipo === 'purchase'
         ? data.totalAsk ?? data.ask ?? 0
@@ -68,7 +68,7 @@ const obtenerPrecio = async () => {
   }
 };
 
-// 📌 Refrescar precio si cambia cripto, exchange o tipo
+
 watch(
   () => [form.value.crypto_code, form.value.exchange, form.value.tipo],
   obtenerPrecio,
@@ -77,7 +77,7 @@ watch(
 
 onMounted(obtenerPrecio);
 
-// 💰 Mostrar total en ARS
+
 const precioEnARS = computed(() =>
   (form.value.crypto_amount * precioActual.value).toLocaleString('es-AR', {
     style: 'currency',
@@ -85,7 +85,7 @@ const precioEnARS = computed(() =>
   })
 );
 
-// ✅ Guardar la transacción
+
 const guardarTransaccion = async () => {
     try {
         const res = await fetch('http://localhost:7028/api/Transacciones', {
