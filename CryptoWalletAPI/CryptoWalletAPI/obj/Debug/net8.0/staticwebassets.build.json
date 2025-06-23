@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "4W+YhgQjKd8wShCE1IJtRwDkDwfnY9p/8N5lNpd+55A=",
+  "Source": "CryptoWalletAPI",
+  "BasePath": "_content/CryptoWalletAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
