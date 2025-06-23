@@ -45,7 +45,7 @@ const editar = async () => {
             cantCrypto: form.value.cantCrypto,
             fecha: form.value.fecha,
             tipo: form.value.tipo,
-            crypto_code: 'btc' // opcional si lo necesita el backend
+            crypto_code: 'btc' 
         })
     });
     router.push('/');
